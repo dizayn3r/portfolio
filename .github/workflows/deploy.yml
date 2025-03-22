@@ -1,9 +1,9 @@
 name: Deploy React Vite App to Hostinger
 
 on:
-  # push:
-  #   branches:
-  #     - main  # Trigger deployment when pushing to the main branch
+  push:
+    branches:
+      - main  # Trigger deployment when pushing to the main branch
   workflow_dispatch: # To enable manual triggering
 
 jobs:
@@ -35,7 +35,7 @@ jobs:
 
       # Step 6: Compress the dist folder
       - name: Compress dist folder
-        run: zip -r dist.zip dist
+        run: zip -r dist.zip dist  # Zipping the entire dist folder
 
       # Step 7: Upload dist.zip to Hostinger
       - name: Upload dist.zip to Hostinger
@@ -46,8 +46,8 @@ jobs:
           password: ${{ secrets.HOSTINGER_PASSWORD }}
           port: ${{ secrets.HOSTINGER_PORT }}
           source: "dist.zip"
-          target: "/home/u797189810/domains/sknt.in/public_html/"  # Replace with your Hostinger directory
-          retry: 3  # Add retry mechanism   
+          target: "/home/u797189810/domains/sknt.in/public_html/"
+          retry: 3  
 
       # Step 8: Extract dist.zip on Hostinger
       - name: Extract dist.zip on Hostinger
@@ -58,6 +58,10 @@ jobs:
           password: ${{ secrets.HOSTINGER_PASSWORD }}
           port: ${{ secrets.HOSTINGER_PORT }}
           script: |
-            cd /home/u797189810/domains/sknt.in/public_html  # Replace with your Hostinger directory
-            unzip -o dist.zip -d .  # Extract the dist.zip file
+            cd /home/u797189810/domains/sknt.in/public_html/
+            unzip -o dist.zip  # Extract dist.zip, creating a dist/ folder inside public_html
             rm dist.zip  # Remove the zip file after extraction
+            
+            # Move all contents of dist to public_html and remove dist folder
+            mv dist/* .
+            rm -r dist
