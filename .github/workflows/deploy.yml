@@ -44,7 +44,7 @@ jobs:
           host: ${{ secrets.HOSTINGER_HOST }}
           username: ${{ secrets.HOSTINGER_USERNAME }}
           password: ${{ secrets.HOSTINGER_PASSWORD }}
-          port: 22
+          port: 65002
           source: "dist.zip"
           target: "/home/u797189810/domains/sknt.in/public_html/"  # Replace with your Hostinger directory
           retry: 3  # Add retry mechanism   
