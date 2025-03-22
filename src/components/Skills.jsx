@@ -6,13 +6,61 @@ import SkillCard from './SkillCard';
 export default function Skills() {
     const { setVerifiedSkills } = useStats();
     const skills = {
-        languages: ["HTML5", "CSS3", "C", "Java", "Kotlin", "Dart", "Python", "Go", "JavaScript", "TypeScript"],
-        frontend: ["React Js", "Tailwind CSS", "Flutter", "Jetpack Compose", "React Native", "Bootstrap", "Material-UI"],
-        backend: ["Node.js", "Express", "Django", "Flask"],
-        database: ["MySQL", "PostgreSQL", "MongoDB", "Firebase"],
-        devOps: ["GitHub Actions", "Jenkins", "Nginx", "Ansible", "Terraform", "Docker", "Kubernetes", "AWS", "GCP", "Azure"],
-        design: ["Figma", "Adobe Illustrator", "Adobe Photoshop"],
-        tools: ["VS Code", "Android Studio", "Git", "GitLab", "BitBucket", "Postman", "Insomnia", "Jira", "Slack"],
+        languages: [
+            { name: "HTML5", description: "Markup language for structuring web pages." },
+            { name: "CSS3", description: "Stylesheet language for designing web pages." },
+            { name: "C", description: "General-purpose programming language." },
+            { name: "Java", description: "Object-oriented programming language." },
+            { name: "Kotlin", description: "Modern programming language for Android development." },
+            { name: "Dart", description: "Programming language optimized for Flutter." },
+            { name: "Python", description: "Popular programming language for various applications." },
+            { name: "Go", description: "Efficient and scalable programming language by Google." },
+            { name: "JavaScript", description: "Dynamic programming language for web development." },
+            { name: "TypeScript", description: "Superset of JavaScript with static typing." }
+        ],
+        frontend: [
+            { name: "React Js", description: "Library for building user interfaces." },
+            { name: "Tailwind CSS", description: "Utility-first CSS framework for styling." },
+            { name: "Flutter", description: "Framework for cross-platform mobile applications." },
+            { name: "Jetpack Compose", description: "Modern UI toolkit for Android." },
+            { name: "React Native", description: "Framework for building mobile apps with React." },
+            { name: "Bootstrap", description: "Popular front-end framework for responsive design." }
+        ],
+        backend: [
+            { name: "Node.js", description: "JavaScript runtime for building server-side applications." },
+            { name: "Express", description: "Minimalist web framework for Node.js." },
+            { name: "Django", description: "High-level Python web framework." },
+            { name: "Flask", description: "Lightweight Python web framework." }
+        ],
+        database: [
+            { name: "MySQL", description: "Relational database management system." },
+            { name: "PostgreSQL", description: "Advanced open-source relational database." },
+            { name: "MongoDB", description: "NoSQL database for flexible data storage." },
+            { name: "Firebase", description: "Backend-as-a-service platform by Google." }
+        ],
+        devOps: [
+            { name: "GitHub Actions", description: "CI/CD automation tool." },
+            { name: "Jenkins", description: "Automation server for CI/CD pipelines." },
+            { name: "Nginx", description: "High-performance web server and reverse proxy." },
+            { name: "Ansible", description: "Automation tool for IT configuration management." },
+            { name: "Terraform", description: "Infrastructure as Code tool." },
+            { name: "Docker", description: "Containerization platform." },
+            { name: "Kubernetes", description: "Container orchestration system." },
+            { name: "AWS", description: "Cloud computing platform by Amazon." },
+            { name: "GCP", description: "Google Cloud Platform for cloud services." },
+            { name: "Azure", description: "Cloud computing platform by Microsoft." }
+        ],
+        tools: [
+            { name: "VS Code", description: "Popular code editor." },
+            { name: "Android Studio", description: "IDE for Android development." },
+            { name: "Git", description: "Version control system." },
+            { name: "GitLab", description: "Web-based DevOps lifecycle tool." },
+            { name: "BitBucket", description: "Git repository management solution." },
+            { name: "Postman", description: "API testing tool." },
+            { name: "Insomnia", description: "API client for testing and debugging." },
+            { name: "Jira", description: "Project management tool." },
+            { name: "Slack", description: "Communication and collaboration platform." }
+        ]
     };
 
     // Calculate total number of skills

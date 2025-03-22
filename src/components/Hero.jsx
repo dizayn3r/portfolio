@@ -26,7 +26,7 @@ function Hero() {
 
     return (
         <motion.section
-            className="flex flex-col items-center justify-center min-h-screen bg-white dark:bg-black text-center px-6"
+            className="flex flex-col items-center justify-center min-h-screen bg-white dark:bg-black text-center px-6 overflow-x-hidden"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
@@ -57,7 +57,7 @@ function Hero() {
 
             {/* Description */}
             <motion.p
-                className="text-gray-600 dark:text-white mt-4 text-lg max-w-xl"
+                className="text-gray-600 dark:text-white mt-4 text-lg max-w-screen-lg"
                 variants={itemVariants}
             >
                 A passionate{" "}

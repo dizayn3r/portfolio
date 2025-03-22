@@ -12,7 +12,7 @@ import StatsSection from "./components/StatsSection";
 export default function App() {
 
   return (
-    <div className="bg-white dark:bg-black w-full">
+    <div className="bg-white dark:bg-black">
     <Navbar />
     <Hero />
     <About />

@@ -27,9 +27,15 @@ export default function ProjectCard({ project }) {
                 </div>
 
                 {/* Title and Description */}
-                <h3 className="mt-4 text-xl font-semibold text-gray-800 dark:text-white">{project.name}</h3>
-                <div className="h-20 overflow-hidden"> {/* Fixed height for description */}
-                    <p className="mt-2 text-gray-700 dark:text-gray-300">{project.description}</p>
+                <h3 className="mt-4 text-xl font-semibold text-gray-800 dark:text-white">
+                    {project.name}
+                </h3>
+                <div className="h-20 overflow-hidden">
+                    {" "}
+                    {/* Fixed height for description */}
+                    <p className="mt-2 text-gray-700 dark:text-gray-300">
+                        {project.description}
+                    </p>
                 </div>
 
                 {/* Enlarge Icon (Visible on Hover) */}
@@ -40,7 +46,10 @@ export default function ProjectCard({ project }) {
 
             {/* Project Modal */}
             {isModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                <div
+                    className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-md"
+                    style={{ backgroundColor: "rgba(200, 200, 200, 0.25)" }}
+                >
                     <motion.div
                         initial={{ opacity: 0, scale: 0.8 }}
                         animate={{ opacity: 1, scale: 1 }}
@@ -57,12 +66,18 @@ export default function ProjectCard({ project }) {
                         </div>
 
                         {/* Title and Description */}
-                        <h3 className="mt-4 text-2xl font-semibold text-gray-800 dark:text-white">{project.name}</h3>
-                        <p className="mt-2 text-gray-700 dark:text-gray-300">{project.description}</p>
+                        <h3 className="mt-4 text-2xl font-semibold text-gray-800 dark:text-white">
+                            {project.name}
+                        </h3>
+                        <p className="mt-2 text-gray-700 dark:text-gray-300">
+                            {project.description}
+                        </p>
 
                         {/* Technologies */}
                         <div className="mt-4">
-                            <h4 className="text-lg font-semibold text-gray-800 dark:text-white">Technologies</h4>
+                            <h4 className="text-lg font-semibold text-gray-800 dark:text-white">
+                                Technologies
+                            </h4>
                             <div className="flex flex-wrap gap-2 mt-2">
                                 {project.technologies.map((tech, idx) => (
                                     <span
