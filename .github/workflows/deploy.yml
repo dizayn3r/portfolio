@@ -46,7 +46,7 @@ jobs:
           password: ${{ secrets.HOSTINGER_PASSWORD }}
           port: 22
           source: "dist.zip"
-          target: "/path/to/your/directory"  # Replace with your Hostinger directory
+          target: "/public_html"  # Replace with your Hostinger directory
 
       # Step 8: Extract dist.zip on Hostinger
       - name: Extract dist.zip on Hostinger
@@ -57,6 +57,6 @@ jobs:
           password: ${{ secrets.HOSTINGER_PASSWORD }}
           port: 22
           script: |
-            cd /path/to/your/directory  # Replace with your Hostinger directory
+            cd /public_html  # Replace with your Hostinger directory
             unzip -o dist.zip -d .  # Extract the dist.zip file
             rm dist.zip  # Remove the zip file after extraction
