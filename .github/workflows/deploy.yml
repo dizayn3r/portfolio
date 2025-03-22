@@ -1,0 +1,65 @@
+name: Deploy React Vite App to Hostinger
+
+on:
+  push:
+    branches:
+      - main  # Trigger deployment when pushing to the main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18  # Use the Node.js version specified in your project
+
+      # Step 3: Install pnpm
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      # Step 4: Install dependencies
+      - name: Install dependencies
+        run: pnpm install
+
+      # Step 5: Build the project
+      - name: Build project
+        run: pnpm run build
+
+      # Step 6: Compress the dist folder
+      - name: Compress dist folder
+        run: zip -r dist.zip dist  # Zipping the entire dist folder
+
+      # Step 7: Upload dist.zip to Hostinger
+      - name: Upload dist.zip to Hostinger
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOSTINGER_HOST }}
+          username: ${{ secrets.HOSTINGER_USERNAME }}
+          password: ${{ secrets.HOSTINGER_PASSWORD }}
+          port: ${{ secrets.HOSTINGER_PORT }}
+          source: "dist.zip"
+          target: "/home/u797189810/domains/sknt.in/public_html/"
+
+      # Step 8: Extract dist.zip on Hostinger
+      - name: Extract dist.zip on Hostinger
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOSTINGER_HOST }}
+          username: ${{ secrets.HOSTINGER_USERNAME }}
+          password: ${{ secrets.HOSTINGER_PASSWORD }}
+          port: ${{ secrets.HOSTINGER_PORT }}
+          script: |
+            cd /home/u797189810/domains/sknt.in/public_html/
+            unzip -o dist.zip  # Extract dist.zip, creating a dist/ folder inside public_html
+            rm dist.zip  # Remove the zip file after extraction
+            
+            # Move all contents of dist to public_html and remove dist folder
+            mv dist/* .
+            rm -r dist

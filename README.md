@@ -1,4 +1,6 @@
-# React + Vite
+# Portfolio
+
+[![Deploy React Vite App to Hostinger](https://github.com/dizayn3r/portfolio/actions/workflows/deploy.yml/badge.svg?branch=main)](https://github.com/dizayn3r/portfolio/actions/workflows/deploy.yml)
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
