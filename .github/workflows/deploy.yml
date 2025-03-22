@@ -1,0 +1,62 @@
+name: Deploy React Vite App to Hostinger
+
+on:
+  push:
+    branches:
+      - main  # Trigger deployment when pushing to the main branch
+  workflow_dispatch: # To enable manual triggering
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18  # Use the Node.js version specified in your project
+
+      # Step 3: Install pnpm
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      # Step 4: Install dependencies
+      - name: Install dependencies
+        run: pnpm install
+
+      # Step 5: Build the project
+      - name: Build project
+        run: pnpm run build
+
+      # Step 6: Compress the dist folder
+      - name: Compress dist folder
+        run: zip -r dist.zip dist
+
+      # Step 7: Upload dist.zip to Hostinger
+      - name: Upload dist.zip to Hostinger
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOSTINGER_HOST }}
+          username: ${{ secrets.HOSTINGER_USERNAME }}
+          password: ${{ secrets.HOSTINGER_PASSWORD }}
+          port: 22
+          source: "dist.zip"
+          target: "/path/to/your/directory"  # Replace with your Hostinger directory
+
+      # Step 8: Extract dist.zip on Hostinger
+      - name: Extract dist.zip on Hostinger
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOSTINGER_HOST }}
+          username: ${{ secrets.HOSTINGER_USERNAME }}
+          password: ${{ secrets.HOSTINGER_PASSWORD }}
+          port: 22
+          script: |
+            cd /path/to/your/directory  # Replace with your Hostinger directory
+            unzip -o dist.zip -d .  # Extract the dist.zip file
+            rm dist.zip  # Remove the zip file after extraction
