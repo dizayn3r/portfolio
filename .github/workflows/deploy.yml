@@ -44,7 +44,7 @@ jobs:
           host: ${{ secrets.HOSTINGER_HOST }}
           username: ${{ secrets.HOSTINGER_USERNAME }}
           password: ${{ secrets.HOSTINGER_PASSWORD }}
-          port: 65002
+          port: ${{ secrets.HOSTINGER_PORT }}
           source: "dist.zip"
           target: "/home/u797189810/domains/sknt.in/public_html/"  # Replace with your Hostinger directory
           retry: 3  # Add retry mechanism   
@@ -56,7 +56,7 @@ jobs:
           host: ${{ secrets.HOSTINGER_HOST }}
           username: ${{ secrets.HOSTINGER_USERNAME }}
           password: ${{ secrets.HOSTINGER_PASSWORD }}
-          port: 22
+          port: ${{ secrets.HOSTINGER_PORT }}
           script: |
             cd /home/u797189810/domains/sknt.in/public_html/  # Replace with your Hostinger directory
             unzip -o dist.zip -d .  # Extract the dist.zip file
