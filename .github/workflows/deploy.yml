@@ -47,6 +47,7 @@ jobs:
           port: 22
           source: "dist.zip"
           target: "/home/u797189810/domains/sknt.in/public_html/"  # Replace with your Hostinger directory
+          retry: 3  # Add retry mechanism   
 
       # Step 8: Extract dist.zip on Hostinger
       - name: Extract dist.zip on Hostinger
