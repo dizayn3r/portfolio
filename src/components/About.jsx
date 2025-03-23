@@ -5,43 +5,40 @@ export default function About() {
     return (
         <section
             id="about"
-            className="py-20 flex items-center dark:from-gray-900 dark:to-gray-800"
+            className="py-20 bg-white dark:bg-gray-900"
         >
-            <div className="container mx-auto px-6">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Heading */}
                 <motion.h2
                     initial={{ opacity: 0, y: -20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8 }}
                     viewport={{ once: true }}
-                    className="text-3xl font-bold dark:text-white text-center"
+                    className="text-3xl font-bold text-center text-gray-800 dark:text-white"
                 >
                     About Me
                 </motion.h2>
 
                 {/* Flex Container for Photo and Text */}
-                <div className="mt-8 flex flex-col md:flex-row items-center gap-8">
+                <div className="mt-8 flex flex-col lg:flex-row items-center gap-8">
                     {/* Photo (Left Side) */}
-                    <div className="flex-1 flex flex-col items-center md:items-start gap-6">
-                        {/* Photo */}
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.8 }}
-                            whileInView={{ opacity: 1, scale: 1 }}
-                            transition={{ duration: 0.8, delay: 0.2 }}
-                            viewport={{ once: true }}
-                            className="w-64 h-80 md:w-72 md:h-96 rounded-lg overflow-hidden shadow-lg"
-                        >
-                            <img
-                                rel="preload"
-                                src="/photo_2.jpg" // Replace with your photo path
-                                alt="Shashi Kant"
-                                className="w-full h-full object-cover"
-                            />
-                        </motion.div>
-                    </div>
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.8, delay: 0.2 }}
+                        viewport={{ once: true }}
+                        className="w-64 h-80 lg:w-72 lg:h-96 rounded-lg overflow-hidden shadow-lg"
+                    >
+                        <img
+                            rel="preload"
+                            src="/photo_2.jpg" // Replace with your photo path
+                            alt="Shashi Kant"
+                            className="w-full h-full object-cover"
+                        />
+                    </motion.div>
 
                     {/* About Me Text (Right Side) */}
-                    <div className="flex-3">
+                    <div className="flex-1">
                         <motion.p
                             initial={{ opacity: 0, x: 50 }}
                             whileInView={{ opacity: 1, x: 0 }}
@@ -50,7 +47,10 @@ export default function About() {
                             className="text-gray-700 dark:text-gray-300 text-lg"
                         >
                             Hi, my name is{" "}
-                            <span className="font-semibold text-blue-600 text-lg">Shashi Kant</span>. I am a Full Stack Developer with expertise in Flutter, React, and Node.js. I have experience in building mobile and web applications, managing deployments, and working with REST APIs. My goal is to work in a firm where I can utilize and apply my knowledge and skills to grow while fulfilling organizational goals. I have built many industry-grade projects from scratch and am armed with many technological skills useful for tech projects.
+                            <span className="font-semibold text-blue-600 dark:text-blue-400">
+                                Shashi Kant
+                            </span>
+                            . I am a Full Stack Developer with expertise in Flutter, React, and Node.js. I have experience in building mobile and web applications, managing deployments, and working with REST APIs. My goal is to work in a firm where I can utilize and apply my knowledge and skills to grow while fulfilling organizational goals. I have built many industry-grade projects from scratch and am armed with many technological skills useful for tech projects.
                         </motion.p>
                         <motion.p
                             initial={{ opacity: 0, x: 50 }}

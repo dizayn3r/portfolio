@@ -31,7 +31,7 @@ function StatsSection() {
             >
                 {/* Verified Skills */}
                 <motion.div
-                    className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md text-center"
+                    className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md text-center"
                     variants={itemVariants}
                 >
                     <h3 className="text-4xl font-bold text-blue-600">{verifiedSkills}</h3>
@@ -40,7 +40,7 @@ function StatsSection() {
 
                 {/* Professional Projects */}
                 <motion.div
-                    className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md text-center"
+                    className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md text-center"
                     variants={itemVariants}
                 >
                     <h3 className="text-4xl font-bold text-blue-600">{professionalProjects}</h3>
@@ -49,7 +49,7 @@ function StatsSection() {
 
                 {/* Experience in Years */}
                 <motion.div
-                    className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md text-center"
+                    className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md text-center"
                     variants={itemVariants}
                 >
                     <h3 className="text-4xl font-bold text-blue-600">{yearsOfExperience}</h3>
@@ -58,7 +58,7 @@ function StatsSection() {
 
                 {/* DSA Problems Solved */}
                 {/* <motion.div
-                    className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md text-center"
+                    className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md text-center"
                     variants={itemVariants}
                 >
                     <h3 className="text-4xl font-bold text-blue-600">{dsaProblemsSolved}</h3>

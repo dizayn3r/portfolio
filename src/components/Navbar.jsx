@@ -24,7 +24,7 @@ export default function Navbar() {
 
     return (
         <nav
-            className={`bg-white dark:bg-black fixed w-full z-50 top-0 transition-shadow duration-300 ${hasShadow ? "shadow-md" : "shadow-none"
+            className={`bg-white dark:bg-gray-900 fixed w-full z-50 top-0 transition-shadow duration-300 ${hasShadow ? "shadow-md" : "shadow-none"
                 }`} style={{ maxHeight: "var(--navbar-height))" }}
         >
             <div className="container mx-auto px-6 py-4 flex justify-between items-center">
@@ -55,7 +55,7 @@ export default function Navbar() {
                 {/* Navigation items on the right */}
                 <div
                     className={`${isOpen ? "block" : "hidden"
-                        } md:flex md:space-x-6 absolute md:relative top-full left-0 w-full md:w-auto bg-white dark:bg-black shadow-md md:shadow-none transition-all duration-300 ease-in-out`}
+                        } md:flex md:space-x-6 absolute md:relative top-full left-0 w-full md:w-auto bg-white dark:bg-gray-900 shadow-md md:shadow-none transition-all duration-300 ease-in-out`}
                 >
                     <a
                         href="#about"
@@ -76,10 +76,16 @@ export default function Navbar() {
                         Projects
                     </a>
                     <a
-                        href="#education-experience"
+                        href="#experience"
                         className="block py-2 px-4 font-bold text-gray-800 dark:text-white hover:text-red-600"
                     >
                         Experience
+                    </a>
+                    <a
+                        href="#education"
+                        className="block py-2 px-4 font-bold text-gray-800 dark:text-white hover:text-red-600"
+                    >
+                        Certificates
                     </a>
                     <a
                         href="#contact"

@@ -26,7 +26,7 @@ function Hero() {
 
     return (
         <motion.section
-            className="flex flex-col items-center justify-center min-h-screen bg-white dark:bg-black text-center px-6 overflow-x-hidden"
+            className="flex flex-col items-center justify-center min-h-screen bg-white dark:bg-gray-900 text-center px-6 overflow-x-hidden"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
