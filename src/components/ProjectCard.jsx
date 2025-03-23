@@ -73,6 +73,23 @@ export default function ProjectCard({ project }) {
                             {project.description}
                         </p>
 
+                        {/* Frameworks */}
+                        <div className="mt-4">
+                            <h4 className="text-lg font-semibold text-gray-800 dark:text-white">
+                                Frameworks
+                            </h4>
+                            <div className="flex flex-wrap gap-2 mt-2">
+                                {project.frameworks.map((tech, idx) => (
+                                    <span
+                                        key={idx}
+                                        className="bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-100 px-3 py-1 rounded-full text-sm"
+                                    >
+                                        {tech}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+
                         {/* Technologies */}
                         <div className="mt-4">
                             <h4 className="text-lg font-semibold text-gray-800 dark:text-white">

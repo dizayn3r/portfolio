@@ -2,16 +2,22 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Hexagon as HexagonIcon } from "lucide-react";
 import Modal from "./Modal"; // Import the modal component
+import { useMediaQuery } from "react-responsive";
 
 function SkillCard({ title, skills }) {
     const [showModal, setShowModal] = useState(false);
+
+    // Breakpoints
+    const isDesktop = useMediaQuery({ minWidth: 1024 }); // lg breakpoint
+    const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 1023 }); // md breakpoint
+    const skillsToShow = isDesktop ? 6 : isTablet ? 4 : 3; // Dynamic skill count
 
     return (
         <>
             {/* Skill Card */}
             <motion.div
                 className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md cursor-pointer hover:shadow-lg transition-shadow duration-300"
-                style={{ height: "25vh", width: "100%" }} // Set consistent height and width
+                style={{ height: isDesktop ? "25vh" : isTablet ? "10vh" :"20vh", width: "100%" }} // Set consistent height and width
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
@@ -32,7 +38,7 @@ function SkillCard({ title, skills }) {
 
                 {/* Skills List (Limited to 6) */}
                 <div className="mt-2 grid grid-cols-1 md:grid-cols-2 gap-2">
-                    {skills.slice(0, 6).map((skill, index) => (
+                    {skills.slice(0, skillsToShow).map((skill, index) => (
                         <div
                             key={index}
                             className="flex items-center text-gray-700 dark:text-gray-300"

@@ -21,7 +21,7 @@ function StatsSection() {
     };
 
     return (
-        <div className="container mx-auto p-6">
+        <div className="container mx-auto py-6">
             <motion.div
                 className="mt-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6"
                 variants={containerVariants}
@@ -57,13 +57,13 @@ function StatsSection() {
                 </motion.div>
 
                 {/* DSA Problems Solved */}
-                <motion.div
+                {/* <motion.div
                     className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md text-center"
                     variants={itemVariants}
                 >
                     <h3 className="text-4xl font-bold text-blue-600">{dsaProblemsSolved}</h3>
                     <p className="mt-2 text-gray-700 dark:text-gray-300">DSA Problems Solved</p>
-                </motion.div>
+                </motion.div> */}
             </motion.div>
         </div>
     );

@@ -5,40 +5,72 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export default function Projects() {
     const { setProfessionalProjects } = useStats();
-    const [selectedTechnology, setSelectedTechnology] = useState("All");
+    const [selectedFramework, setSelectedFramework] = useState("All");
     const [filteredProjects, setFilteredProjects] = useState([]);
+    const [showAllProjects, setShowAllProjects] = useState(false);
     const filterContainerRef = useRef(null);
 
     const projects = [
         {
             name: "Tyre Pulse",
             description: "An innovative app for tyre testing, planning, and performance analysis. Helps tyre manufacturers address challenges like safety standards, environmental concerns, and market competition.",
-            thumbnail: "/sample.jpg",
+            thumbnail: "/tyre_pulse.webp",
             technologies: ["Flutter", "Clean Architecture", "REST APIs", "BLoC", "Dio"],
-            liveLink: "https://sknt.in",
-            githubRepo: "https://github.com/",
+            frameworks: ["Flutter", "React JS", "Express JS", "AWS S3", "MongoDB", "Figma"],
+            liveLink: "https://play.google.com/store/apps/details?id=com.jk.tyre_pulse&pcampaignid=web_share",
+            githubRepo: "",
         },
         {
             name: "JK Mobility",
             description: "A fleet management solution for tracking tyre life cycles, inspections, and defect analysis. Improved performance by 30% using clean architecture.",
             thumbnail: "/sample.jpg",
-            technologies: ["Flutter","Clean Architecture", "REST APIs", "Auth0","BLoC", "Dio"],
+            technologies: ["Flutter", "Clean Architecture", "REST APIs", "Auth0", "BLoC", "Dio"],
+            frameworks: ["Flutter", "React JS", "Express JS", "AWS S3", "MongoDB", "Figma"],
+            liveLink: "https://play.google.com/store/apps/details?id=com.applore.jkfleet&pcampaignid=web_share",
+            githubRepo: "",
+        },
+        {
+            name: "Enigmatos",
+            description: "Fleet management architecture. Converted the project from JavaScript to TypeScript and managed Nginx server.",
+            thumbnail: "/sample.jpg",
+            technologies: ["React Js", "TypeScript", "SocketIO", "Nginx", "AWS EC2", "BitBucket", "Linux", "ClickUp", "Material UI", "Redux"],
+            frameworks: ["Flutter", "React JS", "Python", "AWS EC2", "Firebase"],
+            liveLink: "https://www.enigmatos.com/",
+            githubRepo: "",
+        },
+        {
+            name: "QKart Frontend",
+            description: "QKart is an e-commerce application offering a variety of products for customers to choose from.",
+            thumbnail: "/sample.jpg",
+            technologies: ["React Hooks", "REST APIs", "React Router", "Material UI", "Netlify"],
+            frameworks: ["React JS", "Express JS", "MongoDB"],
             liveLink: "https://sknt.in",
             githubRepo: "https://github.com/",
         },
         {
+            name: "Tasks Report",
+            description: "Say goodbye to cumbersome reporting processes. Our intuitive platform simplifies daily tasks reporting, allowing team members to effortlessly log their tasks, outline future plans, and request assistance—all within a single, user-friendly interface.",
+            thumbnail: "/tasks_report.webp",
+            technologies: ["React JS", "KeyClock", "AWS S3", "MongoDB", "Python", "Fast API", "Figma"],
+            frameworks: ["React JS", "Express JS", "AWS S3", "MongoDB", "Figma"],
+            liveLink: "https://tasksreport.com/",
+            githubRepo: "",
+        },
+        {
             name: "Video Collaboration App",
             description: "Implemented WebRTC for real-time communication and Auth0 for authentication. Managed deployment to S3 bucket and setup pipeline.",
-            thumbnail: "/sample.jpg",
+            thumbnail: "/video-collaboration.webp",
             technologies: ["React JS", "WebRTC", "Auth0", "AWS S3", "MongoDB", "Redux", "Figma"],
+            frameworks: ["Flutter", "React JS", "Express JS", "AWS S3", "MongoDB", "Figma"],
             liveLink: "https://sknt.in",
-            githubRepo: "https://github.com/",
+            githubRepo: "",
         },
         {
             name: "My Temple & My Temple Admin",
             description: "Facilitated temple management by tracking devotees, handling orders via WooCommerce, and integrating 2C2P payments.",
             thumbnail: "/sample.jpg",
             technologies: ["Flutter", "Payment Gateway", "REST APIs", "Figma"],
+            frameworks: ["Flutter", "Sprint Boot", "AWS EC2", "MySQL", "Figma"],
             liveLink: "https://sknt.in",
             githubRepo: "https://github.com/",
         },
@@ -47,14 +79,7 @@ export default function Projects() {
             description: "B2B e-commerce platform connecting distributors and suppliers. Integrated Auth0 authentication, WooCommerce order management, and REST APIs.",
             thumbnail: "/sample.jpg",
             technologies: ["Flutter", "REST APIs", "Auth0", "Payment Gateway", "Provider"],
-            liveLink: "https://sknt.in",
-            githubRepo: "https://github.com/",
-        },
-        {
-            name: "Enigmatos",
-            description: "Fleet management architecture. Converted the project from JavaScript to TypeScript and managed Nginx server.",
-            thumbnail: "/sample.jpg",
-            technologies: ["React Js", "TypeScript", "Nginx", "AWS EC2", "BitBucket", "Linux", "ClickUp", "Material UI", "Redux"],
+            frameworks: ["Flutter", "Sprint Boot", "AWS EC2", "MySQL", "Figma"],
             liveLink: "https://sknt.in",
             githubRepo: "https://github.com/",
         },
@@ -63,14 +88,7 @@ export default function Projects() {
             description: "A weather app that fetches weather data from the OpenWeatherMap API. Implemented a responsive design using Tailwind CSS.",
             thumbnail: "/sample.jpg",
             technologies: ["React", "Tailwind CSS", "OpenWeatherMap API", "Responsive Design"],
-            liveLink: "https://sknt.in",
-            githubRepo: "https://github.com/",
-        },
-        {
-            name: "QKart Frontend",
-            description: "QKart is an e-commerce application offering a variety of products for customers to choose from.",
-            thumbnail: "/sample.jpg",
-            technologies: ["React Hooks", "REST APIs", "React Router", "Material UI", "Netlify"],
+            frameworks: ["React JS", "Figma"],
             liveLink: "https://sknt.in",
             githubRepo: "https://github.com/",
         },
@@ -81,21 +99,21 @@ export default function Projects() {
         setProfessionalProjects(projects.length);
     }, [setProfessionalProjects]);
 
-    // Get all unique technologies for the filter buttons
-    const allTechnologies = [...new Set(projects.flatMap((project) => project.technologies))];
-    allTechnologies.unshift("All"); // Add "All" option at the beginning
+    // Get all unique frameworks for the filter buttons
+    const allFrameworks = [...new Set(projects.flatMap((project) => project.frameworks))];
+    allFrameworks.unshift("All"); // Add "All" option at the beginning
 
     // Filter projects based on selected technology
     useEffect(() => {
-        if (selectedTechnology === "All") {
+        if (selectedFramework === "All") {
             setFilteredProjects(projects);
         } else {
             const filtered = projects.filter((project) =>
-                project.technologies.includes(selectedTechnology)
+                project.frameworks.includes(selectedFramework)
             );
             setFilteredProjects(filtered);
         }
-    }, [selectedTechnology]);
+    }, [selectedFramework]);
 
     // Scroll filters left and right
     const scrollFilters = (direction) => {
@@ -126,15 +144,14 @@ export default function Projects() {
                         className="flex space-x-4 overflow-x-auto scrollbar-hide"
                         style={{ scrollBehavior: "smooth" }}
                     >
-                        {allTechnologies.map((tech, index) => (
+                        {allFrameworks.map((tech, index) => (
                             <button
                                 key={index}
-                                onClick={() => setSelectedTechnology(tech)}
-                                className={`px-4 py-2 whitespace-nowrap rounded-lg ${
-                                    selectedTechnology === tech
-                                        ? "bg-blue-600 text-white"
-                                        : "bg-white dark:bg-gray-900 text-gray-800 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
-                                } transition-colors`}
+                                onClick={() => setSelectedFramework(tech)}
+                                className={`px-4 py-2 whitespace-nowrap rounded-lg ${selectedFramework === tech
+                                    ? "bg-blue-600 text-white"
+                                    : "bg-white dark:bg-gray-900 text-gray-800 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
+                                    } transition-colors`}
                             >
                                 {tech}
                             </button>
@@ -151,7 +168,7 @@ export default function Projects() {
 
                     {/* Reset Button */}
                     <button
-                        onClick={() => setSelectedTechnology("All")}
+                        onClick={() => setSelectedFramework("All")}
                         className="px-4 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-white rounded-lg shadow-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                     >
                         Reset
@@ -160,10 +177,22 @@ export default function Projects() {
 
                 {/* Projects Grid */}
                 <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {filteredProjects.map((project, index) => (
+                    {(showAllProjects ? filteredProjects : filteredProjects.slice(0, 6)).map((project, index) => (
                         <ProjectCard key={index} project={project} />
                     ))}
                 </div>
+
+                {/* View More / View Less Button */}
+                {filteredProjects.length > 6 && (
+                    <div className="mt-6 text-center">
+                        <button
+                            onClick={() => setShowAllProjects(!showAllProjects)}
+                            className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition-colors"
+                        >
+                            {showAllProjects ? "View Less" : "View More"}
+                        </button>
+                    </div>
+                )}
             </div>
         </section>
     );

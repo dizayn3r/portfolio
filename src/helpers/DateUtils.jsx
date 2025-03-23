@@ -8,5 +8,7 @@ export function calculateTotalExperience(experiences) {
         totalExperience += durationInYears;
     });
 
-    return Math.round(totalExperience * 10) / 10; // Round to 1 decimal place
+    totalExperience = Math.round(totalExperience * 10) / 10; // Round to 1 decimal place
+
+    return totalExperience > 3 ? `${Math.floor(totalExperience)}+` : totalExperience.toFixed(1);
 }

@@ -33,6 +33,7 @@ function Hero() {
         >
             {/* Profile Image */}
             <motion.img
+                rel="preload"
                 src="/photo.jpg" // Replace with actual path
                 alt="Profile"
                 className="w-56 h-56 object-cover rounded-full shadow-lg mb-4"
@@ -69,10 +70,11 @@ function Hero() {
 
             {/* Call-to-Action Button */}
             <motion.button
-                className="mt-6 px-6 py-3 bg-red-500 text-white text-lg font-semibold rounded-lg shadow-md transition duration-300 hover:bg-red-600"
-                variants={itemVariants}
+                className="mt-6 px-6 py-3 cursor-pointer bg-red-500 text-white text-lg font-semibold rounded-lg shadow-md transition duration-300 hover:bg-red-700"
+                variants={buttonVariants}
                 whileHover="hover"
                 whileTap="tap"
+                onClick={() => window.open("mailto:skantin21@gmail.com")}
             >
                 Reach Out
             </motion.button>
