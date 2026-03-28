@@ -1,100 +1,140 @@
 import { useState, useEffect } from "react";
-import Logo from "./Logo";
+import { motion, AnimatePresence } from "framer-motion";
+import { Menu, X, Sun, Moon } from "lucide-react";
+import { useTheme } from "../context/ThemeContext";
+
+const links = [
+    { label: "About",       href: "#about"      },
+    { label: "Skills",      href: "#skills"     },
+    { label: "Projects",    href: "#projects"   },
+    { label: "Blog",        href: "#blog"       },
+    { label: "Experience",  href: "#experience" },
+    { label: "Certificates",href: "#education"  },
+    { label: "Contact",     href: "#contact"    },
+];
 
 export default function Navbar() {
-    const [isOpen, setIsOpen] = useState(false);
-    const [hasShadow, setHasShadow] = useState(false);
+    const [isOpen,    setIsOpen]    = useState(false);
+    const [scrolled,  setScrolled]  = useState(false);
+    const [active,    setActive]    = useState("");
+    const { isDarkMode, toggleTheme } = useTheme();
 
-    // Function to handle scroll event
-    const handleScroll = () => {
-        if (window.scrollY > (window.innerHeight / 2)) {
-            setHasShadow(true);
-        } else {
-            setHasShadow(false);
-        }
-    };
-
-    // Add scroll event listener on component mount
     useEffect(() => {
-        window.addEventListener("scroll", handleScroll);
-        return () => {
-            window.removeEventListener("scroll", handleScroll);
-        };
+        const onScroll = () => setScrolled(window.scrollY > 60);
+        window.addEventListener("scroll", onScroll);
+        return () => window.removeEventListener("scroll", onScroll);
+    }, []);
+
+    // Highlight active nav link based on scroll position
+    useEffect(() => {
+        const ids = links.map((l) => l.href.slice(1));
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((e) => { if (e.isIntersecting) setActive(e.target.id); });
+            },
+            { rootMargin: "-40% 0px -55% 0px" }
+        );
+        ids.forEach((id) => {
+            const el = document.getElementById(id);
+            if (el) observer.observe(el);
+        });
+        return () => observer.disconnect();
     }, []);
 
     return (
-        <nav
-            className={`bg-white dark:bg-gray-900 fixed w-full z-50 top-0 transition-shadow duration-300 ${hasShadow ? "shadow-md" : "shadow-none"
-                }`} style={{ maxHeight: "var(--navbar-height))" }}
+        <motion.header
+            initial={{ y: -64, opacity: 0 }}
+            animate={{ y: 0,   opacity: 1 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+                scrolled
+                    ? "bg-white/90 dark:bg-[#0f0f17]/90 backdrop-blur-lg border-b border-gray-200 dark:border-white/8 shadow-sm"
+                    : "bg-transparent"
+            }`}
         >
-            <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-                {/* Logo on the left */}
-                <Logo />
+            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+                {/* Logo */}
+                <a href="#" className="font-extrabold text-lg tracking-tight">
+                    <span className="text-gray-900 dark:text-white">SK</span>
+                    <span className="text-blue-600 dark:text-blue-400">.</span>
+                </a>
 
-                {/* Hamburger menu for mobile */}
-                <button
-                    onClick={() => setIsOpen(!isOpen)}
-                    className="md:hidden text-gray-800 focus:outline-none dark:text-white"
-                >
-                    <svg
-                        className="w-6 h-6"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                    >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M4 6h16M4 12h16m-7 6h7"
-                        ></path>
-                    </svg>
-                </button>
+                {/* Desktop nav */}
+                <nav className="hidden md:flex items-center gap-1">
+                    {links.map((l) => (
+                        <a
+                            key={l.href}
+                            href={l.href}
+                            className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-all duration-200 ${
+                                active === l.href.slice(1)
+                                    ? "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10"
+                                    : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5"
+                            }`}
+                        >
+                            {l.label}
+                        </a>
+                    ))}
+                </nav>
 
-                {/* Navigation items on the right */}
-                <div
-                    className={`${isOpen ? "block" : "hidden"
-                        } md:flex md:space-x-6 absolute md:relative top-full left-0 w-full md:w-auto bg-white dark:bg-gray-900 shadow-md md:shadow-none transition-all duration-300 ease-in-out`}
-                >
-                    <a
-                        href="#about"
-                        className="block py-2 px-4 font-bold text-gray-800 dark:text-white hover:text-red-600"
+                {/* Right controls */}
+                <div className="flex items-center gap-2">
+                    <button
+                        onClick={toggleTheme}
+                        aria-label="Toggle theme"
+                        className="p-2 rounded-full border border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 transition-all duration-200"
                     >
-                        About
-                    </a>
+                        {isDarkMode ? <Sun size={16} /> : <Moon size={16} />}
+                    </button>
+
                     <a
-                        href="#skills"
-                        className="block py-2 px-4 font-bold text-gray-800 dark:text-white hover:text-red-600"
+                        href="mailto:skantin@sknt.in"
+                        className="hidden md:inline-flex text-sm font-semibold px-4 py-1.5 rounded-full bg-blue-600 hover:bg-blue-500 text-white transition-all duration-200"
                     >
-                        Skills
+                        Hire me
                     </a>
-                    <a
-                        href="#projects"
-                        className="block py-2 px-4 font-bold text-gray-800 dark:text-white hover:text-red-600"
+
+                    {/* Mobile hamburger */}
+                    <button
+                        onClick={() => setIsOpen(!isOpen)}
+                        className="md:hidden p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                        aria-label="Toggle menu"
                     >
-                        Projects
-                    </a>
-                    <a
-                        href="#experience"
-                        className="block py-2 px-4 font-bold text-gray-800 dark:text-white hover:text-red-600"
-                    >
-                        Experience
-                    </a>
-                    <a
-                        href="#education"
-                        className="block py-2 px-4 font-bold text-gray-800 dark:text-white hover:text-red-600"
-                    >
-                        Certificates
-                    </a>
-                    <a
-                        href="#contact"
-                        className="block py-2 px-4 font-bold text-gray-800 dark:text-white hover:text-red-600"
-                    >
-                        Contact
-                    </a>
+                        {isOpen ? <X size={20} /> : <Menu size={20} />}
+                    </button>
                 </div>
             </div>
-        </nav>
+
+            {/* Mobile menu */}
+            <AnimatePresence>
+                {isOpen && (
+                    <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{   opacity: 0, height: 0 }}
+                        className="md:hidden bg-white dark:bg-[#13131f] border-b border-gray-200 dark:border-white/8"
+                    >
+                        <div className="px-4 py-3 flex flex-col gap-1">
+                            {links.map((l) => (
+                                <a
+                                    key={l.href}
+                                    href={l.href}
+                                    onClick={() => setIsOpen(false)}
+                                    className="px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg transition-colors"
+                                >
+                                    {l.label}
+                                </a>
+                            ))}
+                            <a
+                                href="mailto:skantin@sknt.in"
+                                onClick={() => setIsOpen(false)}
+                                className="mt-2 px-3 py-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-500 rounded-lg text-center transition-colors"
+                            >
+                                Hire me
+                            </a>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </motion.header>
     );
 }

@@ -1,25 +1,76 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-@custom-variant dark (&:where(.dark, .dark *));
+@layer base {
+    :root {
+        --navbar-height: 4rem;
+    }
 
-:root {
-    --navbar-height: 4rem;
+    html {
+        scroll-behavior: smooth;
+        scroll-padding-top: 5rem;
+    }
+
+    body {
+        font-family: "Inter", system-ui, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        background-color: #ffffff;
+        color: #111827;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    html.dark body {
+        background-color: #0f0f17;
+        color: #f9fafb;
+    }
+
+    ::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #3b82f6;
+        border-radius: 2px;
+    }
+
+    ::selection {
+        background: rgba(59, 130, 246, 0.25);
+    }
+
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
 }
 
-html, body {
-    width: 100%;
-    height: 100%;
-    overflow-x: hidden;
-    scroll-behavior: smooth;
-}
+@layer utilities {
+    .section-pad {
+        @apply py-16 px-4 sm:px-6 lg:px-8;
+    }
 
-/* Hide scrollbar for Chrome, Safari, and Opera */
-.scrollbar-hide::-webkit-scrollbar {
-    display: none;
-}
+    .container-max {
+        @apply max-w-6xl mx-auto;
+    }
 
-/* Hide scrollbar for IE, Edge, and Firefox */
-.scrollbar-hide {
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
+    .section-label {
+        @apply text-xs font-semibold tracking-widest uppercase text-blue-600 dark:text-blue-400 mb-2;
+    }
+
+    .section-title {
+        @apply text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white;
+    }
+
+    .card-base {
+        @apply bg-white dark:bg-[#1a1a2e] border border-gray-200 dark:border-white/8 rounded-2xl;
+    }
 }
