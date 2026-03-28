@@ -2,15 +2,18 @@ import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useStats } from "../context/StatsContext";
 import ProjectCard from "./ProjectCard";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, ExternalLink, Github, X } from "lucide-react";
+
+const containerV = { hidden: {}, visible: { transition: { staggerChildren: 0.08 } } };
+const cardV      = { hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0, transition: { duration: 0.45, ease: "easeOut" } } };
 
 export default function Projects() {
     const { setProfessionalProjects } = useStats();
     const [selectedFramework, setSelectedFramework] = useState("All");
-    const [filteredProjects, setFilteredProjects] = useState([]);
-    const [showAllProjects, setShowAllProjects] = useState(false);
-    const [selectedProject, setSelectedProject] = useState(null);
-    const filterContainerRef = useRef(null);
+    const [filteredProjects,  setFilteredProjects]  = useState([]);
+    const [showAll,           setShowAll]           = useState(false);
+    const [selectedProject,  setSelectedProject]   = useState(null);
+    const filterRef = useRef(null);
 
     const projects = [
         {
@@ -35,7 +38,7 @@ export default function Projects() {
             name: "Enigmatos",
             description: "Fleet management architecture. Converted the project from JavaScript to TypeScript and managed Nginx server.",
             thumbnail: "/sample.jpg",
-            technologies: ["React Js", "TypeScript", "SocketIO", "Nginx", "AWS EC2", "BitBucket", "Linux", "ClickUp", "Material UI", "Redux"],
+            technologies: ["React Js", "TypeScript", "SocketIO", "Nginx", "AWS EC2", "Linux", "Material UI", "Redux"],
             frameworks: ["Flutter", "React JS", "Python", "AWS EC2", "Firebase"],
             liveLink: "https://www.enigmatos.com/",
             githubRepo: "",
@@ -51,7 +54,7 @@ export default function Projects() {
         },
         {
             name: "Tasks Report",
-            description: "Say goodbye to cumbersome reporting processes. Our intuitive platform simplifies daily tasks reporting, allowing team members to effortlessly log their tasks, outline future plans, and request assistance—all within a single, user-friendly interface.",
+            description: "Intuitive platform simplifying daily tasks reporting — team members can log tasks, outline future plans, and request assistance within a single interface.",
             thumbnail: "/tasks_report.webp",
             technologies: ["React JS", "KeyClock", "AWS S3", "MongoDB", "Python", "Fast API", "Figma"],
             frameworks: ["React JS", "Express JS", "AWS S3", "MongoDB", "Figma"],
@@ -68,8 +71,8 @@ export default function Projects() {
             githubRepo: "",
         },
         {
-            name: "My Temple & My Temple Admin",
-            description: "Facilitated temple management by tracking devotees, handling orders via WooCommerce, and integrating 2C2P payments.",
+            name: "My Temple & Admin",
+            description: "Facilitated temple management by tracking devotees, handling orders via WooCommerce, and integrating 2C2P payment gateway.",
             thumbnail: "/sample.jpg",
             technologies: ["Flutter", "Payment Gateway", "REST APIs", "Figma"],
             frameworks: ["Flutter", "Sprint Boot", "AWS EC2", "MySQL", "Figma"],
@@ -77,7 +80,7 @@ export default function Projects() {
             githubRepo: "https://github.com/",
         },
         {
-            name: "Eatery Experts & Eatery Manager",
+            name: "Eatery Experts",
             description: "B2B e-commerce platform connecting distributors and suppliers. Integrated Auth0 authentication, WooCommerce order management, and REST APIs.",
             thumbnail: "/sample.jpg",
             technologies: ["Flutter", "REST APIs", "Auth0", "Payment Gateway", "Provider"],
@@ -96,171 +99,193 @@ export default function Projects() {
         },
     ];
 
-    // Calculate total number of projects
-    useEffect(() => {
-        setProfessionalProjects(projects.length);
-    }, [setProfessionalProjects]);
+    useEffect(() => { setProfessionalProjects(projects.length); }, []);
 
-    // Get all unique frameworks for the filter buttons
-    const allFrameworks = [...new Set(projects.flatMap((project) => project.frameworks))];
-    allFrameworks.unshift("All"); // Add "All" option at the beginning
+    const allFrameworks = ["All", ...new Set(projects.flatMap((p) => p.frameworks))];
 
-    // Filter projects based on selected technology
     useEffect(() => {
-        if (selectedFramework === "All") {
-            setFilteredProjects(projects);
-        } else {
-            const filtered = projects.filter((project) =>
-                project.frameworks.includes(selectedFramework)
-            );
-            setFilteredProjects(filtered);
-        }
+        setFilteredProjects(
+            selectedFramework === "All"
+                ? projects
+                : projects.filter((p) => p.frameworks.includes(selectedFramework))
+        );
+        setShowAll(false);
     }, [selectedFramework]);
 
-    // Scroll filters left and right
-    const scrollFilters = (direction) => {
-        if (filterContainerRef.current) {
-            const scrollAmount = direction === "left" ? -200 : 200;
-            filterContainerRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
-        }
+    const scrollFilters = (dir) => {
+        if (filterRef.current) filterRef.current.scrollBy({ left: dir === "left" ? -200 : 200, behavior: "smooth" });
     };
 
-    // Animation variants for Framer Motion
-    const cardVariants = {
-        hidden: { opacity: 0, y: 20 },
-        visible: { opacity: 1, y: 0 },
-        hover: { scale: 1.05, transition: { duration: 0.2 } },
-    };
-
-    const popupVariants = {
-        hidden: { opacity: 0, scale: 0.8 },
-        visible: { opacity: 1, scale: 1, transition: { duration: 0.3 } },
-    };
+    const visible = showAll ? filteredProjects : filteredProjects.slice(0, 6);
 
     return (
-        <section id="projects" className="py-20 bg-white dark:bg-gray-800">
-            <div className="container mx-auto px-6">
-                <h2 className="text-3xl font-bold text-center text-gray-800 dark:text-white">Projects</h2>
+        <section id="projects" className="section-pad bg-slate-50 dark:bg-[#13131f]">
+            <div className="container-max">
+                {/* Header */}
+                <motion.div
+                    initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }} transition={{ duration: 0.5 }}
+                    className="text-center mb-8"
+                >
+                    <p className="section-label">Work</p>
+                    <h2 className="section-title">Featured Projects</h2>
+                    <p className="text-gray-400 text-sm mt-2">{projects.length} projects · click a card for details</p>
+                </motion.div>
 
-                {/* Filters with Scroll Buttons */}
-                <div className="mt-8 flex items-center justify-center space-x-4">
-                    {/* Left Scroll Button */}
+                {/* Filter bar */}
+                <div className="flex items-center gap-3 mb-10">
                     <button
                         onClick={() => scrollFilters("left")}
-                        className="p-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-white rounded-full shadow-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                        className="p-2 card-base hover:border-blue-200 dark:hover:border-blue-500/20 text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-all flex-shrink-0"
                     >
-                        <ChevronLeft className="w-6 h-6" />
+                        <ChevronLeft size={18} />
                     </button>
 
-                    {/* Filters Container */}
-                    {/* Filters Container */}
-                    <div
-                        ref={filterContainerRef}
-                        className="flex space-x-4 overflow-x-auto scrollbar-hide"
-                        style={{ scrollBehavior: "smooth" }}
-                    >
-                        {allFrameworks.map((tech, index) => (
+                    <div ref={filterRef} className="flex gap-2 overflow-x-auto scrollbar-hide flex-1">
+                        {allFrameworks.map((fw) => (
                             <button
-                                key={index}
-                                onClick={() => setSelectedFramework(tech)}
-                                className={`px-4 py-2 whitespace-nowrap rounded-lg ${selectedFramework === tech
-                                    ? "bg-blue-600 text-white"
-                                    : "bg-white dark:bg-gray-900 text-gray-800 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
-                                    } transition-colors`}
+                                key={fw}
+                                onClick={() => setSelectedFramework(fw)}
+                                className={`px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-200 flex-shrink-0 ${
+                                    selectedFramework === fw
+                                        ? "bg-blue-600 text-white"
+                                        : "card-base text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:border-gray-300 dark:hover:border-white/20"
+                                }`}
                             >
-                                {tech}
+                                {fw}
                             </button>
                         ))}
                     </div>
 
-                    {/* Right Scroll Button */}
                     <button
                         onClick={() => scrollFilters("right")}
-                        className="p-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-white rounded-full shadow-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                        className="p-2 card-base hover:border-blue-200 dark:hover:border-blue-500/20 text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-all flex-shrink-0"
                     >
-                        <ChevronRight className="w-6 h-6" />
+                        <ChevronRight size={18} />
                     </button>
 
-                    {/* Reset Button */}
                     <button
                         onClick={() => setSelectedFramework("All")}
-                        className="px-4 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-white rounded-lg shadow-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                        className="px-3 py-1.5 card-base text-xs font-semibold text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white flex-shrink-0 transition-all"
                     >
                         Reset
                     </button>
                 </div>
 
-                {/* Projects Grid */}
-                <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {(showAllProjects ? filteredProjects : filteredProjects.slice(0, 6)).map((project, index) => (
-                        <ProjectCard key={index} project={project} onClick={() => setSelectedProject(project)} />
-                    ))}
-                </div>
+                {/* Grid */}
+                <motion.div
+                    variants={containerV} initial="hidden" whileInView="visible"
+                    viewport={{ once: true }}
+                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
+                >
+                    <AnimatePresence mode="popLayout">
+                        {visible.map((project, i) => (
+                            <motion.div key={project.name} variants={cardV} layout>
+                                <ProjectCard project={project} onClick={() => setSelectedProject(project)} />
+                            </motion.div>
+                        ))}
+                    </AnimatePresence>
+                </motion.div>
 
-                {/* View More / View Less Button */}
+                {/* View more */}
                 {filteredProjects.length > 6 && (
-                    <div className="mt-6 text-center">
+                    <div className="mt-8 text-center">
                         <button
-                            onClick={() => setShowAllProjects(!showAllProjects)}
-                            className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition-colors"
+                            onClick={() => setShowAll(!showAll)}
+                            className="px-6 py-2.5 card-base text-sm font-semibold text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-200 dark:hover:border-blue-500/20 transition-all duration-200"
                         >
-                            {showAllProjects ? "View Less" : "View More"}
+                            {showAll ? "View Less ↑" : `View ${filteredProjects.length - 6} More ↓`}
                         </button>
                     </div>
                 )}
+            </div>
 
-                {/* Popup for Detailed View */}
-                <AnimatePresence>
-                    {selectedProject && (
+            {/* Detail modal */}
+            <AnimatePresence>
+                {selectedProject && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-50 flex items-center justify-center p-4"
+                        style={{ backgroundColor: "rgba(0,0,0,0.6)", backdropFilter: "blur(8px)" }}
+                        onClick={() => setSelectedProject(null)}
+                    >
                         <motion.div
-                            className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-md"
-                            style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
-                            onClick={() => setSelectedProject(null)}
-                            initial="hidden"
-                            animate="visible"
-                            exit="hidden"
-                            variants={popupVariants}
+                            initial={{ opacity: 0, scale: 0.92, y: 20 }}
+                            animate={{ opacity: 1, scale: 1,    y: 0  }}
+                            exit={{   opacity: 0, scale: 0.92, y: 20  }}
+                            transition={{ duration: 0.25 }}
+                            className="bg-white dark:bg-[#1a1a2e] border border-gray-200 dark:border-white/8 rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden"
+                            onClick={(e) => e.stopPropagation()}
                         >
-                            <motion.div
-                                className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md max-w-lg w-full"
-                                onClick={(e) => e.stopPropagation()}
-                                variants={popupVariants}
-                            >
+                            {/* Modal image */}
+                            <div className="relative h-52">
                                 <img
                                     src={selectedProject.thumbnail}
                                     alt={selectedProject.name}
-                                    className="w-full h-48 object-cover rounded-md mb-4"
+                                    className="w-full h-full object-cover"
                                 />
-                                <h4 className="text-2xl font-bold text-gray-900 dark:text-white">
+                                <button
+                                    onClick={() => setSelectedProject(null)}
+                                    className="absolute top-3 right-3 p-1.5 bg-black/50 hover:bg-black/70 text-white rounded-full transition-colors"
+                                >
+                                    <X size={16} />
+                                </button>
+                            </div>
+
+                            <div className="p-6">
+                                <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
                                     {selectedProject.name}
                                 </h4>
-                                <p className="mt-2 text-gray-600 dark:text-gray-300">
+                                <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed mb-5">
                                     {selectedProject.description}
                                 </p>
-                                <div className="mt-4">
-                                    <h5 className="text-lg font-semibold text-gray-800 dark:text-white">Technologies:</h5>
-                                    <div className="flex flex-wrap gap-2 mt-2">
-                                        {selectedProject.technologies.map((tech, idx) => (
-                                            <span
-                                                key={idx}
-                                                className="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-sm"
-                                            >
-                                                {tech}
-                                            </span>
-                                        ))}
-                                    </div>
+
+                                <h5 className="text-xs font-bold tracking-widest uppercase text-gray-400 mb-3">
+                                    Technologies
+                                </h5>
+                                <div className="flex flex-wrap gap-2 mb-6">
+                                    {selectedProject.technologies.map((tech) => (
+                                        <span key={tech} className="text-xs font-medium px-2.5 py-1 rounded-full bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300 border border-blue-100 dark:border-blue-500/20">
+                                            {tech}
+                                        </span>
+                                    ))}
                                 </div>
-                                <button
-                                    className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-                                    onClick={() => setSelectedProject(null)}
-                                >
-                                    Close
-                                </button>
-                            </motion.div>
+
+                                <div className="flex gap-3">
+                                    {selectedProject.liveLink && selectedProject.liveLink !== "https://sknt.in" && (
+                                        <a
+                                            href={selectedProject.liveLink}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold transition-colors"
+                                        >
+                                            <ExternalLink size={14} /> Live Demo
+                                        </a>
+                                    )}
+                                    {selectedProject.githubRepo && (
+                                        <a
+                                            href={selectedProject.githubRepo}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl card-base text-sm font-semibold text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-all"
+                                        >
+                                            <Github size={14} /> GitHub
+                                        </a>
+                                    )}
+                                    <button
+                                        onClick={() => setSelectedProject(null)}
+                                        className="px-5 py-2.5 rounded-xl card-base text-sm font-semibold text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all"
+                                    >
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
                         </motion.div>
-                    )}
-                </AnimatePresence>
-            </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </section>
     );
 }

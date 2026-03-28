@@ -1,145 +1,216 @@
-import { motion } from "framer-motion";
-import { useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useState } from "react";
 import { useStats } from "../context/StatsContext";
-import SkillCard from './SkillCard';
+
+const containerV = { hidden: {}, visible: { transition: { staggerChildren: 0.05 } } };
+const cardV = { hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0, transition: { duration: 0.35 } } };
+
+const icons = {
+    "JavaScript": "🟨", "TypeScript": "🔷", "Dart": "💙", "Python": "🐍",
+    "Kotlin": "🟣", "HTML5": "🟠", "CSS3": "🔵", "Go": "🐹", "Java": "☕", "C": "⚙️",
+    "Flutter": "📱", "React.js": "⚛️", "Tailwind CSS": "🎨", "Jetpack Compose": "🤖",
+    "React Native": "📲", "Bootstrap": "🅱️", "Framer Motion": "🎞️", "Next.js": "▲",
+    "Node.js": "🟢", "Express": "🚂", "Django": "🎸", "Flask": "🌶️",
+    "REST APIs": "🔗", "GraphQL": "🌐", "Socket.IO": "🔌",
+    "MongoDB": "🍃", "PostgreSQL": "🐘", "MySQL": "🐬",
+    "Firebase": "🔥", "Supabase": "⚡", "Redis": "🔴",
+    "AWS": "☁️", "Docker": "🐳", "Docker Swarm": "🔄", "Kubernetes": "⎈",
+    "GitHub Actions": "🤖", "Jenkins": "👷", "Nginx": "🌿", "Terraform": "🏗️",
+    "Linux": "🐧", "Shell Scripting": "📜", "GCP": "🌥️", "Git": "🌳",
+    "VS Code": "💻", "Android Studio": "🤖", "Postman": "📮", "Figma": "🎨",
+    "Jira": "🗂️", "GitLab": "🦊", "BitBucket": "🪣", "Insomnia": "😴",
+};
+
+const getIcon = (name) => icons[name] || "🔧";
+
+const allSkills = [
+    // Mobile
+    { name: "Flutter", category: "Mobile", level: "Expert", years: 4 },
+    { name: "Dart", category: "Mobile", level: "Expert", years: 4 },
+    { name: "React Native", category: "Mobile", level: "Intermediate", years: 2 },
+    { name: "Jetpack Compose", category: "Mobile", level: "Intermediate", years: 2 },
+    { name: "Kotlin", category: "Mobile", level: "Intermediate", years: 2 },
+    // Frontend
+    { name: "React.js", category: "Frontend", level: "Expert", years: 4 },
+    { name: "JavaScript", category: "Frontend", level: "Expert", years: 5 },
+    { name: "TypeScript", category: "Frontend", level: "Expert", years: 4 },
+    { name: "Tailwind CSS", category: "Frontend", level: "Expert", years: 3 },
+    { name: "HTML5", category: "Frontend", level: "Expert", years: 5 },
+    { name: "CSS3", category: "Frontend", level: "Expert", years: 5 },
+    { name: "Bootstrap", category: "Frontend", level: "Expert", years: 4 },
+    { name: "Framer Motion", category: "Frontend", level: "Intermediate", years: 2 },
+    // Backend
+    { name: "Node.js", category: "Backend", level: "Expert", years: 4 },
+    { name: "Express", category: "Backend", level: "Expert", years: 3 },
+    { name: "REST APIs", category: "Backend", level: "Expert", years: 5 },
+    { name: "Python", category: "Backend", level: "Intermediate", years: 3 },
+    { name: "Django", category: "Backend", level: "Intermediate", years: 2 },
+    { name: "Flask", category: "Backend", level: "Intermediate", years: 2 },
+    { name: "GraphQL", category: "Backend", level: "Intermediate", years: 2 },
+    { name: "Socket.IO", category: "Backend", level: "Intermediate", years: 2 },
+    // Database
+    { name: "MongoDB", category: "Database", level: "Expert", years: 4 },
+    { name: "PostgreSQL", category: "Database", level: "Expert", years: 3 },
+    { name: "Firebase", category: "Database", level: "Expert", years: 4 },
+    { name: "MySQL", category: "Database", level: "Intermediate", years: 3 },
+    { name: "Supabase", category: "Database", level: "Intermediate", years: 1 },
+    // Cloud & DevOps
+    { name: "AWS", category: "Cloud & DevOps", level: "Intermediate", years: 3 },
+    { name: "Docker", category: "Cloud & DevOps", level: "Expert", years: 3 },
+    { name: "Docker Swarm", category: "Cloud & DevOps", level: "Intermediate", years: 2 },
+    { name: "Linux", category: "Cloud & DevOps", level: "Expert", years: 4 },
+    { name: "Shell Scripting", category: "Cloud & DevOps", level: "Expert", years: 3 },
+    { name: "GitHub Actions", category: "Cloud & DevOps", level: "Expert", years: 3 },
+    { name: "Nginx", category: "Cloud & DevOps", level: "Expert", years: 3 },
+    { name: "Jenkins", category: "Cloud & DevOps", level: "Intermediate", years: 2 },
+    { name: "Kubernetes", category: "Cloud & DevOps", level: "Intermediate", years: 1 },
+    { name: "Terraform", category: "Cloud & DevOps", level: "Intermediate", years: 1 },
+    { name: "Git", category: "Cloud & DevOps", level: "Expert", years: 5 },
+    // Tools
+    { name: "VS Code", category: "Tools", level: "Expert", years: 5 },
+    { name: "Android Studio", category: "Tools", level: "Expert", years: 4 },
+    { name: "Postman", category: "Tools", level: "Expert", years: 4 },
+    { name: "Figma", category: "Tools", level: "Intermediate", years: 3 },
+    { name: "Jira", category: "Tools", level: "Expert", years: 3 },
+    { name: "GitLab", category: "Tools", level: "Expert", years: 3 },
+    { name: "BitBucket", category: "Tools", level: "Intermediate", years: 3 },
+];
+
+const tabs = ["All", "Mobile", "Frontend", "Backend", "Database", "Cloud & DevOps", "Tools"];
+
+const levelStyle = {
+    Expert: "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-500/20",
+    Intermediate: "bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-500/20",
+    Beginner: "bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 border-gray-200 dark:border-white/10",
+};
+
+const catColor = {
+    "Mobile": "text-cyan-600 dark:text-cyan-400 border-cyan-200 dark:border-cyan-500/20",
+    "Frontend": "text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-500/20",
+    "Backend": "text-violet-600 dark:text-violet-400 border-violet-200 dark:border-violet-500/20",
+    "Database": "text-green-600 dark:text-green-400 border-green-200 dark:border-green-500/20",
+    "Cloud & DevOps": "text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-500/20",
+    "Tools": "text-rose-600 dark:text-rose-400 border-rose-200 dark:border-rose-500/20",
+};
+
+function SkillCard({ skill }) {
+    return (
+        <motion.div
+            variants={cardV}
+            className="bg-white dark:bg-[#1a1a2e] border border-gray-200 dark:border-white/8 rounded-xl p-4 flex flex-col gap-3 hover:border-blue-300 dark:hover:border-blue-500/30 hover:shadow-sm transition-all duration-200"
+        >
+            <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/6 flex items-center justify-center text-xl flex-shrink-0">
+                    {getIcon(skill.name)}
+                </div>
+                <div className="min-w-0">
+                    <p className="text-sm font-bold text-gray-900 dark:text-white leading-tight truncate">
+                        {skill.name}
+                    </p>
+                    <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
+                        {skill.years} year{skill.years > 1 ? "s" : ""} exp
+                    </p>
+                </div>
+            </div>
+            <span className={`self-start text-[10px] font-bold px-2.5 py-1 rounded-full border tracking-wide ${levelStyle[skill.level] || levelStyle.Beginner}`}>
+                {skill.level}
+            </span>
+        </motion.div>
+    );
+}
 
 export default function Skills() {
     const { setVerifiedSkills } = useStats();
-    const skills = {
-        languages: [
-            { name: "HTML5", description: "Markup language for structuring web pages." },
-            { name: "CSS3", description: "Stylesheet language for designing web pages." },
-            { name: "C", description: "General-purpose programming language." },
-            { name: "Java", description: "Object-oriented programming language." },
-            { name: "Kotlin", description: "Modern programming language for Android development." },
-            { name: "Dart", description: "Programming language optimized for Flutter." },
-            { name: "Python", description: "Popular programming language for various applications." },
-            { name: "Go", description: "Efficient and scalable programming language by Google." },
-            { name: "JavaScript", description: "Dynamic programming language for web development." },
-            { name: "TypeScript", description: "Superset of JavaScript with static typing." }
-        ],
-        frontend: [
-            { name: "React Js", description: "Library for building user interfaces." },
-            { name: "Tailwind CSS", description: "Utility-first CSS framework for styling." },
-            { name: "Flutter", description: "Framework for cross-platform mobile applications." },
-            { name: "Jetpack Compose", description: "Modern UI toolkit for Android." },
-            { name: "React Native", description: "Framework for building mobile apps with React." },
-            { name: "Bootstrap", description: "Popular front-end framework for responsive design." }
-        ],
-        backend: [
-            { name: "Node.js", description: "JavaScript runtime for building server-side applications." },
-            { name: "Express", description: "Minimalist web framework for Node.js." },
-            { name: "Django", description: "High-level Python web framework." },
-            { name: "Flask", description: "Lightweight Python web framework." }
-        ],
-        database: [
-            { name: "MySQL", description: "Relational database management system." },
-            { name: "PostgreSQL", description: "Advanced open-source relational database." },
-            { name: "MongoDB", description: "NoSQL database for flexible data storage." },
-            { name: "Firebase", description: "Backend-as-a-service platform by Google." }
-        ],
-        devOps: [
-            { name: "GitHub Actions", description: "CI/CD automation tool." },
-            { name: "Jenkins", description: "Automation server for CI/CD pipelines." },
-            { name: "Nginx", description: "High-performance web server and reverse proxy." },
-            { name: "Ansible", description: "Automation tool for IT configuration management." },
-            { name: "Terraform", description: "Infrastructure as Code tool." },
-            { name: "Docker", description: "Containerization platform." },
-            { name: "Kubernetes", description: "Container orchestration system." },
-            { name: "AWS", description: "Cloud computing platform by Amazon." },
-            { name: "GCP", description: "Google Cloud Platform for cloud services." },
-            { name: "Azure", description: "Cloud computing platform by Microsoft." }
-        ],
-        tools: [
-            { name: "VS Code", description: "Popular code editor." },
-            { name: "Android Studio", description: "IDE for Android development." },
-            { name: "Git", description: "Version control system." },
-            { name: "GitLab", description: "Web-based DevOps lifecycle tool." },
-            { name: "BitBucket", description: "Git repository management solution." },
-            { name: "Postman", description: "API testing tool." },
-            { name: "Insomnia", description: "API client for testing and debugging." },
-            { name: "Jira", description: "Project management tool." },
-            { name: "Slack", description: "Communication and collaboration platform." }
-        ]
-    };
+    const [activeTab, setActiveTab] = useState("All");
 
-    // Calculate total number of skills
-    useEffect(() => {
-        const totalSkills = Object.values(skills).reduce((acc, skillList) => acc + skillList.length, 0);
-        setVerifiedSkills(totalSkills);
-    }, [setVerifiedSkills]);
+    useEffect(() => { setVerifiedSkills(allSkills.length); }, []);
 
-    // Animation variants
-    const containerVariants = {
-        hidden: { opacity: 0 },
-        visible: {
-            opacity: 1,
-            transition: {
-                staggerChildren: 0.2, // Stagger the animations of children
-            },
-        },
-    };
+    const filtered = activeTab === "All" ? allSkills : allSkills.filter((s) => s.category === activeTab);
 
-    const itemVariants = {
-        hidden: { opacity: 0, y: 20 },
-        visible: { opacity: 1, y: 0 },
-    };
+    const grouped = tabs.slice(1).reduce((acc, cat) => {
+        const items = filtered.filter((s) => s.category === cat);
+        if (items.length) acc.push({ cat, items });
+        return acc;
+    }, []);
 
     return (
-        <motion.section
-            id="skills"
-            className="bg-gray-100 dark:bg-gray-800 py-20 flex items-center"
-            style={{ minHeight: "100vh" }}
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }} // Trigger animation when 20% of the container is in view
-        >
-            <div className="container mx-auto px-6">
-                {/* Heading */}
-                <motion.h2
-                    className="text-3xl font-bold text-center text-gray-800 dark:text-white"
-                    variants={itemVariants}
-                >
-                    Skills
-                </motion.h2>
+        <section id="skills" className="py-20 px-4 sm:px-6 lg:px-8 bg-white dark:bg-[#0f0f17]">
+            <div className="max-w-6xl mx-auto">
 
-                {/* Skills Grid */}
                 <motion.div
-                    className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-                    variants={containerVariants}
+                    initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }} transition={{ duration: 0.5 }}
+                    className="text-center mb-10"
                 >
-                    {/* Programming Languages */}
-                    <motion.div variants={itemVariants}>
-                        <SkillCard title="Programming Languages" skills={skills.languages} />
-                    </motion.div>
-
-                    {/* Frontend Skills */}
-                    <motion.div variants={itemVariants}>
-                        <SkillCard title="Frontend" skills={skills.frontend} />
-                    </motion.div>
-
-                    {/* Backend Skills */}
-                    <motion.div variants={itemVariants}>
-                        <SkillCard title="Backend" skills={skills.backend} />
-                    </motion.div>
-
-                    {/* Database Skills */}
-                    <motion.div variants={itemVariants}>
-                        <SkillCard title="Database" skills={skills.database} />
-                    </motion.div>
-
-                    {/* DevOps Skills */}
-                    <motion.div variants={itemVariants}>
-                        <SkillCard title="DevOps" skills={skills.devOps} />
-                    </motion.div>
-
-                    {/* Tools */}
-                    <motion.div variants={itemVariants}>
-                        <SkillCard title="Tools" skills={skills.tools} />
-                    </motion.div>
+                    <p className="text-xs font-semibold tracking-widest uppercase text-blue-600 dark:text-blue-400 mb-2">Tech Arsenal</p>
+                    <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white">Technology Stack</h2>
+                    <p className="text-gray-400 text-sm mt-2">Technologies I use to bring ideas to life</p>
                 </motion.div>
+
+                <motion.div
+                    initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }} transition={{ duration: 0.4, delay: 0.1 }}
+                    className="flex flex-wrap justify-center gap-2 mb-12"
+                >
+                    {tabs.map((tab) => (
+                        <button
+                            key={tab}
+                            onClick={() => setActiveTab(tab)}
+                            className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 ${activeTab === tab
+                                    ? "bg-blue-600 text-white shadow-md shadow-blue-600/20"
+                                    : "bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-white/10"
+                                }`}
+                        >
+                            {tab}
+                        </button>
+                    ))}
+                </motion.div>
+
+                <AnimatePresence mode="wait">
+                    <motion.div key={activeTab} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
+                        {grouped.map(({ cat, items }) => (
+                            <div key={cat} className="mb-10 last:mb-0">
+                                {activeTab === "All" && (
+                                    <div className={`flex items-center gap-3 mb-5 pb-3 border-b ${catColor[cat]}`}>
+                                        <h3 className={`text-sm font-bold tracking-wide ${catColor[cat].split(" ")[0]} ${catColor[cat].split(" ")[1]}`}>
+                                            {cat}
+                                        </h3>
+                                        <span className="text-xs text-gray-400">{items.length} skills</span>
+                                    </div>
+                                )}
+                                <motion.div
+                                    variants={containerV}
+                                    initial="hidden"
+                                    whileInView="visible"
+                                    viewport={{ once: true, amount: 0.05 }}
+                                    className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3"
+                                >
+                                    {items.map((skill) => (
+                                        <SkillCard key={skill.name} skill={skill} />
+                                    ))}
+                                </motion.div>
+                            </div>
+                        ))}
+                    </motion.div>
+                </AnimatePresence>
+
+                <motion.div
+                    initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
+                    viewport={{ once: true }} transition={{ delay: 0.3 }}
+                    className="flex items-center justify-center gap-5 mt-10 pt-8 border-t border-gray-100 dark:border-white/6"
+                >
+                    {[
+                        { label: "Expert", cls: "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-500/20" },
+                        { label: "Intermediate", cls: "bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-500/20" },
+                    ].map(({ label, cls }) => (
+                        <div key={label} className="flex items-center gap-2">
+                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${cls}`}>{label}</span>
+                            <span className="text-xs text-gray-400">{label === "Expert" ? "4+ yrs" : "1–3 yrs"}</span>
+                        </div>
+                    ))}
+                </motion.div>
+
             </div>
-        </motion.section>
+        </section>
     );
 }

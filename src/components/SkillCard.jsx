@@ -1,65 +1,42 @@
-import React, { useState } from "react";
-import { motion } from "framer-motion";
-import { Hexagon as HexagonIcon } from "lucide-react";
-import Modal from "./Modal"; // Import the modal component
-import { useMediaQuery } from "react-responsive";
+export default function SkillCard({ title, skills, color = "blue" }) {
+    const colorMap = {
+        blue:   { heading: "text-blue-600 dark:text-blue-400",   tag: "bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300 border-blue-100 dark:border-blue-500/20",   bar: "bg-blue-500"   },
+        cyan:   { heading: "text-cyan-600 dark:text-cyan-400",   tag: "bg-cyan-50 dark:bg-cyan-500/10 text-cyan-700 dark:text-cyan-300 border-cyan-100 dark:border-cyan-500/20",   bar: "bg-cyan-500"   },
+        violet: { heading: "text-violet-600 dark:text-violet-400", tag: "bg-violet-50 dark:bg-violet-500/10 text-violet-700 dark:text-violet-300 border-violet-100 dark:border-violet-500/20", bar: "bg-violet-500" },
+        green:  { heading: "text-green-600 dark:text-green-400",  tag: "bg-green-50 dark:bg-green-500/10 text-green-700 dark:text-green-300 border-green-100 dark:border-green-500/20",  bar: "bg-green-500"  },
+        amber:  { heading: "text-amber-600 dark:text-amber-400",  tag: "bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-100 dark:border-amber-500/20",  bar: "bg-amber-500"  },
+        rose:   { heading: "text-rose-600 dark:text-rose-400",    tag: "bg-rose-50 dark:bg-rose-500/10 text-rose-700 dark:text-rose-300 border-rose-100 dark:border-rose-500/20",    bar: "bg-rose-500"   },
+    };
 
-function SkillCard({ title, skills }) {
-    const [showModal, setShowModal] = useState(false);
-
-    // Breakpoints
-    const isDesktop = useMediaQuery({ minWidth: 1024 }); // lg breakpoint
-    const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 1023 }); // md breakpoint
-    const skillsToShow = isDesktop ? 6 : isTablet ? 4 : 3; // Dynamic skill count
+    const c = colorMap[color] || colorMap.blue;
+    const levelColor = { Expert: "text-emerald-600 dark:text-emerald-400", Intermediate: "text-amber-600 dark:text-amber-400", Beginner: "text-gray-400" };
 
     return (
-        <>
-            {/* Skill Card */}
-            <motion.div
-                className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md cursor-pointer hover:shadow-lg transition-shadow duration-300"
-                style={{ height: isDesktop ? "25vh" : isTablet ? "10vh" :"20vh", width: "100%" }} // Set consistent height and width
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-                viewport={{ once: true, amount: 0.2 }} // Trigger animation when 20% of the card is in view
-                onClick={() => setShowModal(true)}
-                role="button" // Add role for accessibility
-                tabIndex={0} // Make the card focusable
-                onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                        setShowModal(true); // Open modal on Enter or Space key
-                    }
-                }}
-            >
-                {/* Title */}
-                <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">
-                    {title}
-                </h3>
-
-                {/* Skills List (Limited to 6) */}
-                <div className="mt-2 grid grid-cols-1 md:grid-cols-2 gap-2">
-                    {skills.slice(0, skillsToShow).map((skill, index) => (
-                        <div
-                            key={index}
-                            className="flex items-center text-gray-700 dark:text-gray-300"
-                        >
-                            <HexagonIcon className="w-4 h-4 text-black dark:text-white flex-shrink-0" />
-                            <span className="ml-2 text-sm">{skill.name}</span>
+        <div className="bg-white dark:bg-[#1a1a2e] border border-gray-200 dark:border-white/8 rounded-2xl p-5 hover:border-blue-200 dark:hover:border-blue-500/20 hover:shadow-sm transition-all duration-200">
+            <h3 className={`text-xs font-bold tracking-widest uppercase mb-4 pb-3 border-b border-gray-100 dark:border-white/6 ${c.heading}`}>
+                {title}
+            </h3>
+            <div className="flex flex-col gap-2.5">
+                {skills.map((skill) => (
+                    <div key={skill.name} className="flex items-center justify-between group">
+                        <div className="flex items-center gap-2 min-w-0">
+                            <span className={`inline-block text-xs font-medium px-2.5 py-1 rounded-full border flex-shrink-0 ${c.tag}`}>
+                                {skill.name}
+                            </span>
                         </div>
-                    ))}
-                </div>
-            </motion.div>
-
-            {/* Modal to Show All Skills */}
-            {showModal && (
-                <Modal
-                    onClose={() => setShowModal(false)}
-                    title={title}
-                    skills={skills}
-                />
-            )}
-        </>
+                        <div className="flex items-center gap-2 flex-shrink-0 ml-2">
+                            {skill.level && (
+                                <span className={`text-[10px] font-semibold ${levelColor[skill.level] || "text-gray-400"}`}>
+                                    {skill.level}
+                                </span>
+                            )}
+                            {skill.years && (
+                                <span className="text-[10px] text-gray-400 dark:text-gray-500">{skill.years}y</span>
+                            )}
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
     );
 }
-
-export default React.memo(SkillCard); // Optimize with React.memo
