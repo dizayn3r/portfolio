@@ -1,6 +1,5 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@config "../tailwind.config.js";
 
 @layer base {
     :root {
@@ -55,7 +54,19 @@
 
 @layer utilities {
     .section-pad {
-        @apply py-16 px-4 sm:px-6 lg:px-8;
+        @apply py-16 px-4;
+    }
+
+    @media (min-width: 640px) {
+        .section-pad {
+            @apply px-6;
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .section-pad {
+            @apply px-8;
+        }
     }
 
     .container-max {
@@ -67,7 +78,13 @@
     }
 
     .section-title {
-        @apply text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white;
+        @apply text-3xl font-bold text-gray-900 dark:text-white;
+    }
+
+    @media (min-width: 640px) {
+        .section-title {
+            @apply text-4xl;
+        }
     }
 
     .card-base {
